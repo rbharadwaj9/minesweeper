@@ -1,7 +1,7 @@
 CXX=g++
 CXXFLAGS=-std=c++1z -Wall -Werror -Wextra -pedantic
 
-EXECUTABLE=minesweeper_backend
+EXECUTABLE=minesweeper
 
 # list of sources used in project
 SOURCES     = $(wildcard *.cpp)

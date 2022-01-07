@@ -1,0 +1,24 @@
+{
+  "name": "minesweeper",
+  "version": "1.0.0",
+  "description": "Minesweeper Game Backend",
+  "main": "index.js",
+  "gypfile": true,
+  "scripts": {
+    "all": "npm run clean; npm run configure; npm run build",
+    "build": "node-gyp rebuild",
+    "clean": "node-gyp clean",
+    "configure": "node-gyp configure",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rajiv Bharadwaj",
+  "license": "MIT",
+  "dependencies": {
+    "node-addon-api": "^4.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.6.0",
+    "eslint-plugin-react": "^7.28.0",
+    "node-gyp": "^8.4.1"
+  }
+}

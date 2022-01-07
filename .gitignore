@@ -1,0 +1,22 @@
+# Tag Files
+tags
+
+# Swap Files
+*.swp
+*.swo
+
+# dSYM File
+*.dSYM
+
+# Objects
+*.o
+
+# Executables
+*.exe
+minesweeper
+minesweeper_debug
+
+# Node Related
+node_modules
+*.log
+build
