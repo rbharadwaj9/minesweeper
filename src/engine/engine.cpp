@@ -162,11 +162,7 @@ bool Minesweeper::is_game_over() {
 
 std::string Minesweeper::get_mines() const {
   std::ostringstream out;
-  auto st = mines.begin();
-  while (st != mines.end()) {
-    out << *st << ", ";
-    ++st;
-  }
+  std::copy(mines.cbegin(), mines.cend(), std::ostream_iterator<Coordinate>(out, " "));
   return out.str();
 }
 
