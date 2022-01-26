@@ -1,3 +1,4 @@
+#include <sstream>
 #include "api.h"
 
 Napi::FunctionReference EngineApi::constructor;
@@ -40,16 +41,15 @@ Napi::Value EngineApi::getFullBoard(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
     Napi::HandleScope scope(env);
 
-    std::string result = "Hello";
-
+    std::string result = this->game_->get_board_debug();
     return Napi::String::New(env, result);
 }
 
 Napi::Value EngineApi::getState(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
-    std::string result = "Hello";
-
+    std::string result = this->game_->get_user_board();
     return Napi::String::New(env, result);
 }
 
