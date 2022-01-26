@@ -4,16 +4,10 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <unordered_set>
 #include <string>
 
-struct Coordinate {
-  int r;
-  int c;
-
-  Coordinate(int r_in, int c_in);
-
-  friend std::ostream& operator<<(std::ostream& os, const Coordinate &c);
-};
+#include "coordinate.h"
 
 class Minesweeper  {
 
@@ -21,13 +15,18 @@ class Minesweeper  {
 
     // Initialize num mines randomly in given board size
     Minesweeper(int r, int c, int num_mines);
+    //
+    // Initialize num mines randomly in given board size with seed
+    Minesweeper(int r, int c, int num_mines, int seed);
 
     /* // Initialize mines at given coordinates */
-    Minesweeper(int r, int c, std::vector<Coordinate> &mines_in);
+    Minesweeper(int r, int c, std::unordered_set<Coordinate, CoordinateHash> &mines_in);
 
     bool play_move(const Coordinate &click);
 
     bool is_game_over();
+
+    std::string get_mines() const;
 
     std::string get_board_debug() const;
 
@@ -47,12 +46,14 @@ class Minesweeper  {
     std::vector<std::vector<int> > board; // -1 is a mine, 1-8 are useful
     std::vector<std::vector<bool> > state; // true - uncovered
 
-    std::vector<Coordinate> mines;
+    std::unordered_set<Coordinate, CoordinateHash> mines;
 
   private:
-    void populate_neighbors(const Coordinate &mine);
+    void generate_mines(int num_mines, int seed);
 
     void populate_board();
+
+    void populate_neighbors(const Coordinate &mine);
 
     void uncover(const Coordinate &click);
 
@@ -69,8 +70,6 @@ class Minesweeper  {
     void execute_valid_move(const Coordinate &click);
 
 };
-
-std::ostream& operator<<(std::ostream& os, const Coordinate &c);
 
 std::ostream& operator<<(std::ostream& os, const Minesweeper &m);
 

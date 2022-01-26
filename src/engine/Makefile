@@ -4,7 +4,7 @@ CXXFLAGS=-std=c++1z -Wall -Werror -Wextra -pedantic
 EXECUTABLE=minesweeper
 
 # list of sources used in project
-SOURCES     = $(wildcard *.cpp)
+SOURCES     = coordinate.cpp engine.cpp driver.cpp
 # list of objects used in project
 OBJECTS     = $(SOURCES:%.cpp=%.o)
 

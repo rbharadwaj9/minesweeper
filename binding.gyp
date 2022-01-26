@@ -5,6 +5,7 @@
         "cflags_cc!": [ "-fno-exceptions" ],
         "sources": [
             "./src/index.cpp",
+            "./src/engine/coordinate.cpp",
             "./src/engine/engine.cpp",
             "./src/engine/api.cpp"
         ],

@@ -1,20 +1,55 @@
 #include <sstream>
+#include <random>
+
 #include "engine.h"
 
-Coordinate::Coordinate(int r_in, int c_in) : r(r_in), c(c_in) {}
+Minesweeper::Minesweeper(int r, int c, int num_mines) : Minesweeper(r, c, num_mines, 0)
+{}
 
-Minesweeper::Minesweeper(int r, int c, int num_mines) :
+Minesweeper::Minesweeper(int r, int c, int num_mines, int seed) :
   finished(false), rows(r), cols(c), total_spots(r*c), uncovered_ct(0),
-  board(r, std::vector<int>(c, 0)), state(r, std::vector<bool>(c, false)), mines({}) {
-    populate_board();
-    /* print_board(std::cout); */
-  }
-
-Minesweeper::Minesweeper(int r, int c, std::vector<Coordinate> &mines_in) :
-  finished(false), rows(r), cols(c), total_spots(r*c), uncovered_ct(0),
-  board(r, std::vector<int>(c, 0)), state(r, std::vector<bool>(c, false)), mines(mines_in) {
+  board(r, std::vector<int>(c, 0)), state(r, std::vector<bool>(c, false)),
+  mines({}) {
+    generate_mines(num_mines, seed);
     populate_board();
   }
+
+
+Minesweeper::Minesweeper(int r, int c, std::unordered_set<Coordinate, CoordinateHash> &mines_in) :
+  finished(false), rows(r), cols(c), total_spots(r*c), uncovered_ct(0),
+  board(r, std::vector<int>(c, 0)), state(r, std::vector<bool>(c, false)),
+  mines(mines_in) {
+    populate_board();
+}
+
+void Minesweeper::generate_mines(int num_mines, int seed) {
+  std::random_device r_dev;
+  std::mt19937 rng_r(r_dev());
+  std::mt19937 rng_c(r_dev());
+  if (seed) {
+    std::cout << "Setting Seed" << std::endl;
+    rng_r.seed(seed);
+    rng_c.seed(seed);
+  }
+  std::uniform_int_distribution<int> int_dist_r(0, rows-1);
+  std::uniform_int_distribution<int> int_dist_c(0, cols-1);
+  while (static_cast<int>(mines.size()) != num_mines) {
+    int row = int_dist_r(rng_r);
+    int col = int_dist_c(rng_c);
+    Coordinate c(row, col);
+    mines.insert(c);
+  }
+}
+
+void Minesweeper::populate_board() {
+  for (const auto &mine : mines) {
+    assert(mine.r >= 0 && mine.r < rows);
+    assert(mine.c >= 0 && mine.c < cols);
+    board[mine.r][mine.c] = -1;
+
+    populate_neighbors(mine);
+  }
+}
 
 void Minesweeper::populate_neighbors(const Coordinate &mine) {
   for (int i = -1; i < 2; ++i) {
@@ -28,19 +63,8 @@ void Minesweeper::populate_neighbors(const Coordinate &mine) {
         continue;
       }
 
-      board[next_row][next_col] += 1;
+      board[next_row][next_col] += board[next_row][next_col] != -1 ? 1 : 0;
     }
-  }
-}
-
-void Minesweeper::populate_board() {
-  for (const auto &mine : mines) {
-
-    assert(mine.r >= 0 && mine.r < rows);
-    assert(mine.c >= 0 && mine.c < cols);
-    board[mine.r][mine.c] = -1;
-
-    populate_neighbors(mine);
   }
 }
 
@@ -136,6 +160,16 @@ bool Minesweeper::is_game_over() {
   return finished;
 }
 
+std::string Minesweeper::get_mines() const {
+  std::ostringstream out;
+  auto st = mines.begin();
+  while (st != mines.end()) {
+    out << *st << ", ";
+    ++st;
+  }
+  return out.str();
+}
+
 std::string Minesweeper::get_board_debug() const {
   std::ostringstream out;
   print_board_debug(out);
@@ -151,7 +185,7 @@ std::string Minesweeper::get_user_board() const {
 std::ostream& Minesweeper::print_board_debug(std::ostream &os) const {
   for (const auto &b_r : board) {
     for (const auto b_c : b_r) {
-      os << b_c << ", ";
+      os << b_c << " ";
     }
     os << "\n";
   }
@@ -169,11 +203,6 @@ std::ostream& Minesweeper::print_user_board(std::ostream &os) const {
     }
     os << "\n";
   }
-  return os;
-}
-
-std::ostream& operator<<(std::ostream& os, const Coordinate &c) {
-  os << "(" << c.r << "," << c.c << ")";
   return os;
 }
 
